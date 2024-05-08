@@ -11,6 +11,7 @@ import java.util.Objects;
 
 public class ImageUtil {
 
+    // 如果图片名称不是默认的 default.png，则会在指定路径下查找同名的图片文件并删除之。
     public static void deleteImage(String imageName,String path){
         if(!imageName.equals("default.png")){
             File folder = new File("D:\\upload\\"+path);
@@ -26,6 +27,7 @@ public class ImageUtil {
         }
     }
 
+    // 此方法用于生成一个新的唯一文件名，文件名由当前日期和一个 UUID 组成，再加上指定的文件扩展名。
     public static String getFileName(String extension){
         String today = DateUtil.today();
         String uuid = IdUtil.simpleUUID();
@@ -33,6 +35,8 @@ public class ImageUtil {
     }
 
 
+    //此方法用于保存上传的图片文件到指定路径。
+    //如果新文件名不是默认的 default.png，则会先删除同名的图片文件，然后将上传的文件保存到指定路径。
     public static void saveImage(MultipartFile file, String newFileName, String path) throws IOException {
         if(!newFileName.equals("default.png")) {
             deleteImage(newFileName, path);
@@ -41,4 +45,3 @@ public class ImageUtil {
         }
     }
 }
-

@@ -47,6 +47,8 @@ public class JobController {
     @Autowired
     private CompanyService companyService;
 
+    //用户根据条件搜索职位
+    //personal/job.html
     @GetMapping("/job/getJobsByConditionInPage")
     @RequiresUser
     @ResponseBody
@@ -69,6 +71,8 @@ public class JobController {
         return  map;
     }
 
+    //根据hr公司的id返回岗位列表
+    //service/company/jobManage.html
     @RequiresRoles(value = {"manager","admin"},logical = Logical.OR)
     @ResponseBody
     @GetMapping("/job/getByConditionInCompany/{id}")
@@ -93,6 +97,7 @@ public class JobController {
         return new TableResult(0,"",jobPage.getTotal(),jobPage.getRecords());
     }
 
+    //根据hr获取发布的岗位 service/company/hr.html
     @RequiresRoles(value = {"manager","hr","admin"},logical = Logical.OR)
     @ResponseBody
     @GetMapping("/job/getByConditionInHr/{id}")
@@ -107,6 +112,7 @@ public class JobController {
         return new TableResult(0,"",pageResult.getTotal(),pageResult.getRecords());
     }
 
+    //管理员、hr取消发布岗位（以及批量取消） service/company/jobManage.html
     @PostMapping("/job/unpublish/{jobId}")
     @RequiresRoles(value = {"manager","admin"},logical = Logical.OR)
     @ResponseBody
@@ -115,6 +121,7 @@ public class JobController {
     }
 
 
+    //hr更新发布的岗位 service/company/jobManage.html
     @PostMapping("/job/update/{id}")
     @RequiresRoles(value = {"manager","admin"},logical = Logical.OR)
     @ResponseBody
@@ -122,6 +129,7 @@ public class JobController {
         return jobService.updateById(job)?Result.succ("操作成功"):Result.fail("系统错误");
     }
 
+    //hr发布新岗位 service/company/hr.html
     @PostMapping("/job/publish/{companyId}/{hrId}")
     @RequiresRoles(value = {"manager","hr","admin"},logical = Logical.OR)
     @ResponseBody
@@ -133,24 +141,29 @@ public class JobController {
         return jobService.save(job)?Result.succ("操作成功"):Result.fail("系统错误");
     }
 
+    //获取岗位详细信息（hr信息、公司信息） /job/detail/0932a7d8c325494b81b5156acae2af36.html
     @GetMapping("/job/detail/{id}")
     @RequiresUser
     public String detail(@PathVariable("id")String id, Model model) throws Exception {
         User user = (User) SecurityUtils.getSubject().getPrincipal();
         model.addAttribute("userInfo",user);
 
+        //岗位详细信息
         Job job = jobService.getById(id);
         model.addAttribute("job",job);
 
+        //hr信息
         Hr hr = hrService.getById(job.getCreateHrId());
         model.addAttribute("hr",hr);
 
+        //公司信息
         Company company = companyService.getById(job.getCompanyId());
         model.addAttribute("company",company);
 
         return "personal/detail_job";
     }
 
+    //管理员主页的岗位分布echart
     @GetMapping("/job/chart")
     @RequiresRoles("admin")
     @ResponseBody
@@ -163,6 +176,8 @@ public class JobController {
         return map;
     }
 
+    //管理员岗位管理中的搜索岗位功能 返回TableResult<Job>
+    //admin/manage/job.html
     @RequiresRoles("admin")
     @ResponseBody
     @GetMapping("/job/getByCondition")

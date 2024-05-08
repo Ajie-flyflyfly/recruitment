@@ -4,11 +4,17 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.List;
 
 @TableName("t_province")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Province implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -20,36 +26,36 @@ public class Province implements Serializable {
     @TableField(exist = false)
     private List<City> cityList;
 
-    public Province() {
-    }
-
-    public Province(Integer id, String province, List<City> cityList) {
-        this.id = id;
-        this.province = province;
-        this.cityList = cityList;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getProvince() {
-        return province;
-    }
-
-    public void setProvince(String province) {
-        this.province = province;
-    }
-
-    public List<City> getCityList() {
-        return cityList;
-    }
-
-    public void setCityList(List<City> cityList) {
-        this.cityList = cityList;
-    }
+//    public Province() {
+//    }
+//
+//    public Province(Integer id, String province, List<City> cityList) {
+//        this.id = id;
+//        this.province = province;
+//        this.cityList = cityList;
+//    }
+//
+//    public Integer getId() {
+//        return id;
+//    }
+//
+//    public void setId(Integer id) {
+//        this.id = id;
+//    }
+//
+//    public String getProvince() {
+//        return province;
+//    }
+//
+//    public void setProvince(String province) {
+//        this.province = province;
+//    }
+//
+//    public List<City> getCityList() {
+//        return cityList;
+//    }
+//
+//    public void setCityList(List<City> cityList) {
+//        this.cityList = cityList;
+//    }
 }

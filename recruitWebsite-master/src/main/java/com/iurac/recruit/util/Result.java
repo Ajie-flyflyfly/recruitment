@@ -2,6 +2,9 @@ package com.iurac.recruit.util;
 
 import java.io.Serializable;
 
+/**
+ * 返回给前端的统一格式
+ * */
 public class Result implements Serializable {
     private boolean success;
     private String msg;

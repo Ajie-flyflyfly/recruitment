@@ -24,6 +24,7 @@
               , range: true
             });
 
+            // 管理员聊天关系中的搜索聊天关系功能
             var tableIns = table.render({
                 elem: '#chatLinkTable'
                 , url: '/chat/getChatLinkByCondition'
@@ -40,6 +41,7 @@
                     "startDate":$("#search-createTime").val().split(" - ")[0],
                     "endDate":$("#search-createTime").val().split(" - ")[1] !== null ? $("#search-createTime").val().split(" - ")[1] : ""
                 }
+                // 聊天关系的展示
                 , defaultToolbar: []
                 , page: true
                 , limits: [5, 10, 20]
@@ -57,6 +59,7 @@
                 ]
         });
 
+            // 搜索按钮
             $("#searchBtn").click(function () {
                 tableIns.reload({
                     where: {
@@ -70,6 +73,7 @@
                 });
             })
 
+            // 记录按钮，点击后跳转到聊天记录页面
             table.on('tool(chatLinkTable)', function (obj) {
                 var data = obj.data;
                 switch (obj.event) {

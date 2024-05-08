@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head th:replace="front-common :: commonCss(~{::title},~{},~{},~{::style})">
-    <title>员工管理</title>
+    <title>HR管理</title>
     <style type="text/css">
         .container{
             display: flex;
@@ -93,23 +93,25 @@
         var form = layui.form;
         var $ = layui.jquery;
 
+        // 使用table模块的render方法创建表格
         var tableIns = table.render({
-            elem: '#staffTable'
-            , url: '/hr/getByConditionInCompany/'+[[${hrInfo.companyId}]]
-            , toolbar: '#toolbar'
-            , where: {
+            elem: '#staffTable'// 表格绑定的元素
+            , url: '/hr/getByConditionInCompany/'+[[${hrInfo.companyId}]]// 获取表格数据的URL
+            , toolbar: '#toolbar'// 表格的工具栏
+            , where: {// 发送给服务器的额外参数
                 "name": $('#search-name').val(),
                 "sex": $('#search-sex').val(),
                 "age": $('#search-age').val(),
                 "position": $('#search-position').val()
             }
+            //表格的相关设置
             , defaultToolbar: []
             , page: true
             , limits: [5, 10, 20]
             , limit: 10
             , width: 880
             , cols: [
-                [
+                [// 表格的列配置
                     {type: 'checkbox', fixed: 'left'}
                     , {field: 'id', title: 'ID', hide: true}
                     , {field: 'name', title: '姓名'}
@@ -121,15 +123,17 @@
             ]
         });
 
+        // 为搜索按钮添加点击事件处理器
         $("#searchBtn").click(function (){
+            // 使用tableIns的reload方法重新加载表格数据
             tableIns.reload( {
-                where: {
+                where: {// 更新where参数
                     "name": $('#search-name').val(),
                     "sex": $('#search-sex').val(),
                     "age": $('#search-age').val(),
                     "position": $('#search-position').val()
                 }
-                ,page: {
+                ,page: {// 更新当前页码
                     curr: 1
                 }
             });
@@ -241,6 +245,7 @@
                     console.log(data);
                     if(size != 0){
                         layer.confirm('真的删除么', function(index){
+                            // 批量取消员工与公司的关联
                             for(let i = 0; i < size; i++){
                                 $.ajax({
                                     url: '/hr/unbind/'+data[i].id,
@@ -248,8 +253,8 @@
                                     type:"post",
                                     dataType:"json",
                                     success:function (n){
-                                        if(!n.success){
-                                            layer.msg("取消关联失败,"+n.msg);
+                                        if(n.success){
+                                            layer.msg("取消关联成功,"+n.msg);
                                         }
                                     },
                                     error:function (n){
@@ -264,6 +269,7 @@
                         layer.msg("请勾选要取消关联的员工");
                     }
                     break;
+                //关联新员工
                 case 'save':
                     layer.open({
                         type: 1,

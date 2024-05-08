@@ -1,31 +1,25 @@
 package com.iurac.recruit.controller;
 
 
-import cn.hutool.core.util.IdUtil;
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.iurac.recruit.entity.*;
 import com.iurac.recruit.exception.ServiceException;
+import com.iurac.recruit.security.RedisCache;
 import com.iurac.recruit.security.RedisCacheManager;
 import com.iurac.recruit.service.HrService;
 import com.iurac.recruit.service.RoleService;
 import com.iurac.recruit.service.UserService;
-import com.iurac.recruit.util.ImageUtil;
 import com.iurac.recruit.util.Result;
 import com.iurac.recruit.util.TableResult;
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.cache.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 /**
  * <p>
@@ -47,6 +41,7 @@ public class HrController {
     private RoleService roleService;
 
 
+    //更新HR信息 service/company/hr.html
     @PostMapping("/hr/updateInfo/{id}")
     @RequiresRoles(value = {"hr","manager","admin"},logical = Logical.OR)
     @ResponseBody
@@ -68,6 +63,7 @@ public class HrController {
         return Result.succ("操作成功");
     }
 
+    //更新员工信息 company/staffManage.html
     @PostMapping("/hr/update/{id}")
     @RequiresRoles(value = {"manager","admin"},logical = Logical.OR)
     @ResponseBody
@@ -91,6 +87,7 @@ public class HrController {
         return Result.succ("操作成功");
     }
 
+    //根据公司id获取公司的员工信息列表
     @RequiresRoles(value = {"manager","admin"},logical = Logical.OR)
     @ResponseBody
     @GetMapping("/hr/getByConditionInCompany/{id}")
@@ -109,16 +106,28 @@ public class HrController {
         return new TableResult(0,"",hrList.getTotal(),hrList.getRecords());
     }
 
+    //取消员工与公司的关联(以及批量取消) company/staffManage.html
     @PostMapping("/hr/unbind/{hrId}")
     @RequiresRoles(value = {"manager","admin"},logical = Logical.OR)
     @ResponseBody
     public Result unbind(@PathVariable("hrId")String hrId) throws ServiceException {
+        Hr hr = hrService.getById(hrId);
+        if (hr == null) {
+            return Result.fail("找不到该员工");
+        }
+        User user = userService.getById(hr.getUserId());
+        if (user == null) {
+            return Result.fail("找不到该用户");
+        }
+        RedisCache<Object, Object> cache = (RedisCache<Object, Object>) redisCacheManager.getCache("authorizationCacheName");
+        if (cache != null) {
+            cache.remove(user.toString());
+        }
         hrService.unbind(hrId);
-        User user = userService.getById(hrService.getById(hrId).getId());
-        redisCacheManager.getCache("authorizationCacheName").remove(user.toString());
         return Result.succ("操作成功");
     }
 
+    //根据hrId关联新员工 company/staffManage.html
     @PostMapping("/hr/bind/{companyId}")
     @RequiresRoles(value = {"manager","admin"},logical = Logical.OR)
     @ResponseBody

@@ -6,9 +6,7 @@ import com.iurac.recruit.mapper.RoleMapper;
 import com.iurac.recruit.service.RoleService;
 import org.springframework.stereotype.Service;
 
-/**
- *
- */
+
 @Service("roleService")
 public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements RoleService {
 

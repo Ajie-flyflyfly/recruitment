@@ -37,6 +37,9 @@ public class ChatController {
     @Autowired
     private HrService hrService;
 
+    //管理员中聊天关系功能中的记录按钮的请求路径，返回的是聊天记录的详细内容（根据聊天关系id搜索）
+    //admin/chat/link.html
+    //记录按钮！！！
     @GetMapping({"/admin/chat/message/{linkId}"})
     @RequiresRoles(value = {"admin"})
     public String toChatMessagePage(@PathVariable(value = "linkId",required = false) String linkId, Model model){
@@ -47,6 +50,8 @@ public class ChatController {
         return "admin/chat/message";
     }
 
+    //返回聊天历史
+    //setting/message.html
     @RequiresUser
     @GetMapping("/message/chat/{id}")
     @ResponseBody
@@ -66,6 +71,8 @@ public class ChatController {
         return Result.succ("操作成功",map);
     }
 
+    //返回聊天列表
+    //setting/message.html
     @RequiresUser
     @GetMapping("/message/getChatListVoList")
     @ResponseBody
@@ -80,6 +87,8 @@ public class ChatController {
         return Result.succ("操作成功",map);
     }
 
+    //联系hr功能
+    //personal/job.htmlx
     @RequiresUser
     @GetMapping("/message/newChat/{id}")
     public String newChat(@PathVariable("id")String id) throws ServiceException {
@@ -98,6 +107,8 @@ public class ChatController {
         return "redirect:/setting/message";
     }
 
+    //管理员聊天关系中的搜索聊天关系功能（根据条件搜索） 返回的是聊天关系列表
+    //admin/chat/link.html
     @RequiresRoles("manager")
     @ResponseBody
     @GetMapping("/chat/getChatLinkByCondition")
@@ -110,6 +121,8 @@ public class ChatController {
         return Result.succ("",pageResult);
     }
 
+    //管理员中聊天记录功能  返回的是聊天记录的详细内容（根据条件搜索）
+    //admin/chat/link.html
     @ResponseBody
     @RequiresRoles("manager")
     @GetMapping("/chat/getChatMessageByCondition")

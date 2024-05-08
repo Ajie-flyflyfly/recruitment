@@ -73,15 +73,17 @@
         <div class="filter">
             <div class="layui-container">
                 <form class="layui-form" lay-filter="jobInfoForm">
+                    <!-- 搜索职位输入框和提交按钮 -->
                     <div class="layui-form-item search-input">
                         <input name="jobName" type="text" autocomplete="off" placeholder="搜索职位" class="layui-input">
-                        <button type="submit" lay-filter="submit"  class="layui-btn" lay-submit><i style="font-size: x-large" class="layui-icon layui-icon-search"></i> </button>
+                        <button  type="submit" lay-filter="submit"  class="layui-btn" lay-submit><i style="font-size: x-large" class="layui-icon layui-icon-search"></i> </button>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">学历要求</label>
                         <div class="layui-input-inline">
                             <select name="education" lay-search>
                                 <option value="">请选择学历要求</option>
+                                <!-- 使用thymeleaf模板引擎动态生成选项 -->
                                 <option th:each="education,stat:${application.educationList}"
                                         th:text="${education.value}"
                                         th:value="${education.value}"></option>
@@ -109,15 +111,18 @@
                         </div>
                     </div>
                     <div class="layui-form-item">
+                        <!-- 工作地点选择器，包含省份和城市两个部分，选项是动态生成的 -->
                         <label class="layui-form-label">工作地点</label>
                         <div class="layui-input-inline">
                             <select lay-search lay-filter="province">
                                 <option value="">请选择工作地点</option>
+                                <!-- 使用thymeleaf模板引擎动态生成选项 -->
                                 <option th:each="province,stat:${application.provinceList}"
                                         th:text="${province.province}"
                                         th:value="${province.id}"></option>
                             </select>
                         </div>
+                        <!-- 城市选择器，选项是动态加载的 -->
                         <div class="layui-input-inline">
                             <select id="city" name="city" lay-search>
                             </select>
@@ -140,12 +145,15 @@
             </div>
         </div>
         <div class="layui-container">
+            <!-- 使用layui的栅格系统进行布局，总共分为12列，左边10列用于显示职位信息，右边2列用于显示个人信息 -->
             <div class="layui-row layui-col-space30">
                 <div class="layui-col-md10">
+                    <!-- 职位信息的容器，具体的职位信息应该是通过JavaScript动态添加的 -->
                     <div class="flow-default layui-row layui-col-space30" id="JobInfoFlow">
                     </div>
                 </div>
                 <div class="layui-col-md2">
+                    <!-- 个人信息的容器 -->
                     <div class="layui-row" style="background-color: #ffffff;">
                         <div class="layui-col-md12 personalInfo">
                             <shiro:guest>　　
@@ -179,23 +187,32 @@
     layui.use(['form','flow'], function() {
         var form = layui.form;
         var flow = layui.flow;
+        // 获取layui的jquery实例
         var $ = layui.jquery;
 
+        // 当省份选择框的选项改变时，动态加载对应的城市列表
+        // 监听省份选择框的选项改变事件
         form.on('select(province)', function(data){
+            // 清空城市选择框的选项
             $("#city").html("");
+            // 发送ajax请求，获取选中省份的城市列表
             $.ajax({
-                url: '/dictionary/getCityList/'+data.value,
+                url: '/dictionary/getCityList/'+data.value, // 请求的URL，data.value是选中省份的值
                 type:"get",
-                dataType:"json",
+                dataType:"json",// 返回数据的类型
                 success:function (data){
                     var html = "";
+                    // 遍历返回的城市列表，生成新的选项
                     $.each(data,function (i,n){
                         html += "<option value='"+n.city+"'>"+n.city+"</option>";
                     });
+                    // 将新的选项添加到城市选择框
                 $("#city").html(html);
+                    // 重新渲染表单
                 form.render(null,"jobInfoForm");
                 }
             });
+            // 重新渲染表单
             form.render(null,"jobInfoForm");
         });
 
@@ -218,29 +235,39 @@
         });
 
 
+        // 加载职位信息
         loadFlow();
+        // 监听表单的提交事件
         form.on('submit(submit)', function(data){
+            // 清空职位信息的容器
             $("#JobInfoFlow").empty();
+            // 重新加载职位信息
             loadFlow();
+            // 阻止表单的默认提交行为
             return false;
         });
 
+        // 加载职位信息的函数
         function loadFlow(){
+            // 使用flow的load方法加载职位信息
             flow.load({
-                elem: '#JobInfoFlow'
+                elem: '#JobInfoFlow'// 职位信息的容器
                 ,end:
                     "<div class='layui-col-md12' style='text-align: center'>" +
                     "<hr/>" +
                     "<a>已经拉到底啦</a>" +
-                    "</div>"
-                , done: function (page, next) {
+                    "</div>"// 当没有更多数据时显示的内容
+                , done: function (page, next) {// 每次加载数据时的回调函数，page是当前页数，next是加载下一页数据的函数
+                    // 发送ajax请求，获取职位信息
                     $.ajax({
                         url: '/job/getJobsByConditionInPage?page='+(page-1),
                         type:"get",
-                        data:form.val('jobInfoForm'),
+                        data:form.val('jobInfoForm'),// 请求的数据，是表单的值
                         dataType:"json",
-                        success:function (data){
+                        success:function (data){// 请求成功后的回调函数，data是服务器返回的数据
                             var lis = [];
+                            // 遍历返回的职位信息，生成新的元素
+                            // 职位的展示
                             layui.each(data.jobs, function(index, item){
                                 lis.push("<div class='layui-col-md6 job-grid'>"+
                                          "   <a class='job-info1' href='"+[[@{/job/detail/}]]+item.id+"'>"+
@@ -259,6 +286,7 @@
                                          "   </div>"+
                                          "</div>");
                             });
+                            // 加载新的元素，如果返回的职位信息数量等于12，说明还有更多数据，否则说明没有更多数据
                             next(lis.join(''), data.count === 12);
                         }
                     });

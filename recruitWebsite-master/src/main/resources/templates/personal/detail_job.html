@@ -83,6 +83,7 @@
         </div>
         <div class="layui-container" style="min-height: 50vh;margin-top: 10px;">
             <div class="layui-row layui-col-space30">
+                <!--职位信息-->
                 <div class="layui-col-md10">
                     <div class="layui-panel" style="background-color: #ffffff;">
                         <fieldset class="layui-elem-field layui-field-title">
@@ -97,6 +98,7 @@
 
                     </div>
                 </div>
+                <!--hr和公司信息-->
                 <div class="layui-col-md2">
                     <div class="layui-row" >
                         <div class="layui-col-md12 other-info" style="margin-bottom: 20px;">
@@ -107,7 +109,9 @@
                             <p style="font-size: large;"><span th:text="${hr.name}"></span></p>
                             <p style="font-size: 14px;"><span th:text="${hr.position}"></span></p>
                             <div>
+                                <!--联系hr连接-->
                                 <a th:href="@{/message/newChat/{id}(id=${hr.id})}" class="layui-btn-sm layui-border-green">联系</a>
+                                <!--公司详细信息连接-->
                                 <a th:href="@{/company/detail/{id}(id=${company.id})}" class="layui-btn-sm layui-border-green">详情</a>
                             </div>
                         </div>

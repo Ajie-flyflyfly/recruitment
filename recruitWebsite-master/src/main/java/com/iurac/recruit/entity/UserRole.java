@@ -6,13 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 import java.util.Objects;
 
-/**
- * <p>
- * 
- * </p>
- *
- *
- */
+
 @TableName("t_user_role")
 public class UserRole implements Serializable {
 

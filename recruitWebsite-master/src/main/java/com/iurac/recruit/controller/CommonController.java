@@ -21,6 +21,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * 返回前端请求的页面和页面所需的数据
+ * */
 @Controller
 public class CommonController {
 
@@ -37,6 +40,8 @@ public class CommonController {
     @Autowired
     private ChatService chatService;
 
+    //返回userInfo（admin）
+    //admin/**
     @GetMapping({"/admin/{page}"})
     @RequiresRoles(value = {"admin"})
     public String toPage(@PathVariable("page") String page, Model model){
@@ -47,6 +52,8 @@ public class CommonController {
         return nextPage;
     }
 
+    //返回userInfo（admin）
+    //admin/manage/**
     @GetMapping({"/admin/manage/{page}"})
     @RequiresRoles(value = {"admin"})
     public String toManagePage(@PathVariable("page") String page, Model model){
@@ -57,6 +64,9 @@ public class CommonController {
         return nextPage;
     }
 
+    //返回userInfo（admin）
+    //admin/system/**
+    //admin/system/dictionary
     @GetMapping({"/admin/system/{page}"})
     @RequiresRoles(value = {"admin"})
     public String toDictionaryPage(@PathVariable("page") String page, Model model){
@@ -67,6 +77,8 @@ public class CommonController {
         return nextPage;
     }
 
+    //返回userInfo（admin）
+    //admin/chat/**
     @GetMapping({"/admin/chat/{page}"})
     @RequiresRoles(value = {"admin"})
     public String toChatPage(@PathVariable("page") String page, Model model){
@@ -77,6 +89,8 @@ public class CommonController {
         return nextPage;
     }
 
+    //返回userInfo到职位、公司页面
+    //personal/job.html
     @RequiresRoles(value = {"user","hr","admin"},logical = Logical.OR)
     @GetMapping({"/personal/{page}"})
     public String toPersonalPage(@PathVariable("page") String page, Model model){
@@ -87,6 +101,8 @@ public class CommonController {
         return nextPage;
     }
 
+    //返回userInfo
+    //setting/information
     @RequiresUser
     @GetMapping({"/setting/information"})
     public String toInformationPage(Model model){
@@ -96,6 +112,8 @@ public class CommonController {
         return "setting/information";
     }
 
+    //返回userInfo
+    //setting/password
     @RequiresUser
     @GetMapping({"/setting/password"})
     public String toPasswordPage(Model model){
@@ -105,6 +123,8 @@ public class CommonController {
         return "setting/password";
     }
 
+    //返回用户信息（userInfo）、用户的简历的信息（resumeInfo）
+    // service/resume.html
     @RequiresRoles(value = {"user","admin"},logical = Logical.OR)
     @GetMapping({"/service/resume"})
     public String toResumePage(Model model){
@@ -119,6 +139,8 @@ public class CommonController {
         return "service/resume";
     }
 
+    //返回用户、hr信息（userInfo、hrInfo）
+    // service/company/**.html
     @RequiresRoles(value = {"hr","manager","admin"},logical = Logical.OR)
     @GetMapping({"/service/company/{page}"})
     public String toHrPage(@PathVariable("page")String page, Model model){
@@ -128,6 +150,7 @@ public class CommonController {
         QueryWrapper<Hr> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_id",user.getId());
         Hr hr = hrService.getOne(queryWrapper);
+        //hr未绑定相关公司
         if(ObjectUtil.isNull(hr)){
             return "service/company/join";
         }else{
@@ -137,6 +160,8 @@ public class CommonController {
 
     }
 
+    //返回用户、hr、公司的相关信息（userInfo、hrInfo、companyInfo）
+    // service/company/info.html
     @RequiresRoles(value = {"manager","admin"},logical = Logical.OR)
     @GetMapping({"/service/company/info"})
     public String toHrPage(Model model){
@@ -155,6 +180,8 @@ public class CommonController {
         return "service/company/info";
     }
 
+    //返回用户、hr的相关信息（userInfo、hrInfo）
+    // service/company/staffManage.html
     @RequiresRoles(value = {"manager","admin"},logical = Logical.OR)
     @GetMapping({"/service/company/staffManage"})
     public String toStaffManagePage(Model model) throws Exception {
@@ -173,6 +200,7 @@ public class CommonController {
     }
 
 
+    //返回用户相关信息（userInfo）到setting/message.html
     @RequiresUser
     @GetMapping({"/setting/message"})
     public String toMessagePage(Model model){
@@ -182,6 +210,8 @@ public class CommonController {
         return "setting/message";
     }
 
+    //返回管理员主页的数据统计所需的数据
+    //admin/index.html
     @GetMapping({"/admin/index"})
     @RequiresRoles(value = {"admin"})
     public String toDictionaryPage(Model model){

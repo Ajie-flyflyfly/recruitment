@@ -3,16 +3,13 @@ package com.iurac.recruit.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.Data;
+
 import java.io.Serializable;
 
-/**
- * <p>
- * 
- * </p>
- *
- *
- */
+
 @TableName("t_hr")
+@Data
 public class Hr implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -55,72 +52,72 @@ public class Hr implements Serializable {
     private String userId;
 
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSex() {
-        return sex;
-    }
-
-    public void setSex(String sex) {
-        this.sex = sex;
-    }
-
-    public String getAge() {
-        return age;
-    }
-
-    public void setAge(String age) {
-        this.age = age;
-    }
-
-    public String getPosition() {
-        return position;
-    }
-
-    public void setPosition(String position) {
-        this.position = position;
-    }
-
-    public String getCompanyId() {
-        return companyId;
-    }
-
-    public void setCompanyId(String companyId) {
-        this.companyId = companyId;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    @Override
-    public String toString() {
-        return "Hr{" +
-        "id=" + id +
-        ", name=" + name +
-        ", sex=" + sex +
-        ", age=" + age +
-        ", position=" + position +
-        ", companyId=" + companyId +
-        ", userId=" + userId +
-        "}";
-    }
+//    public String getId() {
+//        return id;
+//    }
+//
+//    public void setId(String id) {
+//        this.id = id;
+//    }
+//
+//    public String getName() {
+//        return name;
+//    }
+//
+//    public void setName(String name) {
+//        this.name = name;
+//    }
+//
+//    public String getSex() {
+//        return sex;
+//    }
+//
+//    public void setSex(String sex) {
+//        this.sex = sex;
+//    }
+//
+//    public String getAge() {
+//        return age;
+//    }
+//
+//    public void setAge(String age) {
+//        this.age = age;
+//    }
+//
+//    public String getPosition() {
+//        return position;
+//    }
+//
+//    public void setPosition(String position) {
+//        this.position = position;
+//    }
+//
+//    public String getCompanyId() {
+//        return companyId;
+//    }
+//
+//    public void setCompanyId(String companyId) {
+//        this.companyId = companyId;
+//    }
+//
+//    public String getUserId() {
+//        return userId;
+//    }
+//
+//    public void setUserId(String userId) {
+//        this.userId = userId;
+//    }
+//
+//    @Override
+//    public String toString() {
+//        return "Hr{" +
+//        "id=" + id +
+//        ", name=" + name +
+//        ", sex=" + sex +
+//        ", age=" + age +
+//        ", position=" + position +
+//        ", companyId=" + companyId +
+//        ", userId=" + userId +
+//        "}";
+//    }
 }

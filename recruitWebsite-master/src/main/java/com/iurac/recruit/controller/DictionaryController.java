@@ -32,8 +32,6 @@ import java.util.Map;
  * <p>
  *  前端控制器
  * </p>
- *
- *
  */
 @Controller
 public class DictionaryController {
@@ -44,18 +42,28 @@ public class DictionaryController {
     private DicValueService dicValueService;
 
 
+    //获取城市列表
+    //getRoleList方法：当接收到一个形如/dictionary/getCityList/{provinceId}的GET请求时，这个方法会被调用。{provinceId}是路径参数，表示省份的ID。
+    // 这个方法会从ServletContext中获取键为"cityInProvince"+id的属性值，这个属性值应该是一个包含了指定省份所有城市的列表，然后将这个列表返回。
+    // 返回的数据会被Spring MVC自动转换为JSON格式，并作为HTTP响应的主体发送给客户端。
     @GetMapping("/dictionary/getCityList/{provinceId}")
     @ResponseBody
     public List<City> getRoleList(@PathVariable("provinceId")Integer id, HttpServletRequest request){
         return (List<City>) request.getServletContext().getAttribute("cityInProvince"+id);
     }
 
+    //getBusinessList方法：当接收到一个形如/dictionary/getBusinessList/{businessId}的GET请求时，这个方法会被调用。
+    // {businessId}是路径参数，表示业务的ID。这个方法会从ServletContext中获取键为"businessInType"+id的属性值，这个属性值应该是一个包含了指定类型所有业务的列表，然后将这个列表返回。
+    // 返回的数据会被Spring MVC自动转换为JSON格式，并作为HTTP响应的主体发送给客户端
     @GetMapping("/dictionary/getBusinessList/{businessId}")
     @ResponseBody
     public List<Business> getBusinessList(@PathVariable("businessId")String id, HttpServletRequest request){
         return (List<Business>) request.getServletContext().getAttribute("businessInType"+id);
     }
 
+    //返回字典中的类型数据
+    //返回的是TableResult
+    //admin/system/dictionary.html
     @ResponseBody
     @RequiresRoles("manager")
     @GetMapping("/dictionary/type/get")
@@ -67,6 +75,9 @@ public class DictionaryController {
         return new TableResult(0,"",pageResult.getTotal(),pageResult.getRecords());
     }
 
+    //返回字典中的类型数据的值
+    //返回的是TableResult
+    //admin/system/dictionary.html
     @ResponseBody
     @RequiresRoles("manager")
     @GetMapping("/dictionary/value/get")
@@ -77,6 +88,8 @@ public class DictionaryController {
         return new TableResult(0,"",pageResultVo.getTotal(),pageResultVo.getRecords());
     }
 
+    //删除字典中的类型数据（以及批量删除）
+    //admin/system/dictionary.html
     @ResponseBody
     @RequiresRoles("manager")
     @PostMapping("/dictionary/type/delete/{id}")
@@ -84,6 +97,8 @@ public class DictionaryController {
         return dicTypeService.deleteType(id) ? Result.succ("操作成功") : Result.fail("系统错误");
     }
 
+    // 新增字典中的数据类型
+    //admin/system/dictionary.html
     @ResponseBody
     @RequiresRoles("manager")
     @PostMapping("/dictionary/type/save")
@@ -96,6 +111,8 @@ public class DictionaryController {
         return dicTypeService.save(dicType) ? Result.succ("操作成功") : Result.fail("系统错误");
     }
 
+    // 编辑字典中的类型数据
+    //admin/system/dictionary.html
     @ResponseBody
     @RequiresRoles("manager")
     @PostMapping("/dictionary/type/update/{id}")
@@ -107,6 +124,8 @@ public class DictionaryController {
         return dicTypeService.updateById(dicType) ? Result.succ("操作成功") : Result.fail("系统错误");
     }
 
+    //删除字典中的类型数据（以及批量删除）
+    //admin/system/dictionary.html
     @ResponseBody
     @RequiresRoles("manager")
     @PostMapping("/dictionary/value/delete/{id}")
@@ -114,6 +133,8 @@ public class DictionaryController {
         return dicValueService.removeById(id) ? Result.succ("操作成功") : Result.fail("系统错误");
     }
 
+    //返回字典中所有的类型数据
+    //admin/system/dictionary.html
     @ResponseBody
     @RequiresRoles("manager")
     @GetMapping("/dictionary/type/getAll")
@@ -121,6 +142,8 @@ public class DictionaryController {
         return dicTypeService.list();
     }
 
+    //保存字典中的类型数据的值
+    //admin/system/dictionary.html
     @ResponseBody
     @RequiresRoles("manager")
     @PostMapping("/dictionary/value/save")
@@ -133,6 +156,8 @@ public class DictionaryController {
         return dicValueService.saveValue(dicValue) ? Result.succ("操作成功") : Result.fail("系统错误");
     }
 
+    //编辑字典中的类型数据的值以及优先级
+    //admin/system/dictionary.html
     @ResponseBody
     @RequiresRoles("manager")
     @PostMapping("/dictionary/value/update/{id}")

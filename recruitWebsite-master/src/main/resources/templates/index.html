@@ -1,8 +1,13 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<html xmlns:th="http://www.thymeleaf.org">
+<!--替换当前位置的 HTML 头部内容。-->
+<!--front-common :: commonCss(...)：这是要替换的模板片段的名称和参数
+    ~{::title}表示传递一个没有任何内容的参数，通常用于模板片段中需要使用的标题。
+    ~{}、~{}：表示传递两个空参数，这可能是模板片段中的其他需要的参数。
+    ~{::style}：表示传递一个没有任何内容的参数，通常用于模板片段中需要使用的样式。-->
 <head th:replace="front-common :: commonCss(~{::title},~{},~{},~{::style})">
     <title>IT人才招聘</title>
+    <!--内联的 CSS 样式，设置了所有元素的内边距和外边距为 0 像素-->
     <style type="text/css">
         * {
             padding: 0px;

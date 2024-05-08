@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head th:replace="front-common :: commonCss(~{::title},~{},~{},~{::style})">
     <title>登录</title>
     <style type="text/css">
@@ -48,6 +49,8 @@
                             <input type="text" id="securityCode" class="layui-input" placeholder="请输入验证码" autocomplete="off" >
                         </div>
                         <div class="layui-input-inline" style="width: 100px;">
+                            <!--当鼠标悬停在图片上时，会显示“点击更换”。-->
+                            <!--使用 Thymeleaf 语法设置图片的 URL，这里使用了 /kaptcha/render 路径，该路径通常用于获取生成的验证码图片-->
                             <img id="securityCodeImg" alt="点击更换" title="点击更换" th:src="@{/kaptcha/render}"/>
                         </div>
                     </div>
@@ -61,9 +64,17 @@
     </div>
 </div>
 <script type="text/javascript">
+   /**
+    * layui.use('util', function(){ ... });：使用 layui 的 util 模块。
+    * util.fixbar({ ... });：创建一个固定块（fixbar）。
+    * bar1: '&#xe65c;'：固定块的图标，使用 layui 的图标。
+    * css: {right: 50, bottom: 100}：固定块的位置。
+    * bgcolor: '#393D49'：固定块的背景色。
+    * click: function(type){ ... }：点击固定块时的回调函数，如果点击的是 bar1，则跳转到首页。
+    * */
     layui.use('util', function(){
         var util = layui.util;
-        //固定块
+        //固定块<fixbar>
         util.fixbar({
             bar1: '&#xe65c;'
             ,css: {right: 50, bottom: 100}
@@ -76,6 +87,13 @@
         });
     });
 
+    /**
+     * $(function (){ ... });：jQuery 的 DOM 加载完成后执行的代码。
+     * $("#username").focus();：页面加载后，用户名输入框获得焦点。
+     * $(window).keydown(function (event){ ... });：监听键盘事件，如果按下回车键（keyCode 为 13），则调用 login() 函数。
+     * $("#loginBtn").click(function (){ ... });：登录按钮点击事件，调用 login() 函数。
+     * $("#securityCodeImg").bind("click", function () { ... });：验证码图片点击事件，重新加载新的验证码图片。
+     * */
     $(function (){
         $("#username").focus();
 
@@ -93,6 +111,12 @@
             $(this).hide().attr('src', '/kaptcha/render?' + Math.random()).fadeIn();
         });
     });
+    /**
+     * 获取输入值：获取用户名、密码和验证码的值。
+     * 验证输入：检查用户名、密码和验证码是否为空。
+     * 发起 AJAX 请求：向 /login 发送 POST 请求，携带用户名、密码和验证码。
+     * 处理响应：如果登录成功，跳转到首页；如果登录失败，重新加载验证码图片并显示错误消息。
+     * */
     function login(){
         var username = $.trim($("#username").val());
         var password = $.trim($("#password").val());

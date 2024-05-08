@@ -190,43 +190,51 @@
     <div th:replace="admin/end-common::footer"></div>
 </div>
 <script th:inline="javascript">
+    // 定义两个全局变量，用于存储Echarts的实例
     var myCompanyChart;
     var myJobChart;
+    // 使用Layui的carousel模块
     layui.use('carousel', function(){
 
         var carousel = layui.carousel;
-        //建造实例
+        // 初始化carousel组件
         carousel.render({
-            elem: '#chart'
-            ,width: '100%'
-            ,height: '400px'
-            ,arrow: 'none'
-            ,autoplay: false
-            ,indicator: 'inside'
-            ,trigger : 'mouseover'
+            elem: '#chart',// 指定要渲染的元素
+            width: '100%',// 设置宽度
+            height: '400px',// 设置高度
+            arrow: 'none',// 不显示箭头
+            autoplay: false,// 不自动播放
+            indicator: 'inside',// 指示器在内部
+            trigger : 'mouseover'// 鼠标悬停时切换
         });
 
+        // 初始化两个图表
         initJobChart();
         initCompanyChart();
 
 
+        // 当carousel的条目改变时，调整图表的大小
         carousel.on('change(chart)', function(obj){
             console.log(obj.index); //当前条目的索引
-            myCompanyChart.resize();
-            myJobChart.resize();
+            myCompanyChart.resize();// 调整公司图表的大小
+            myJobChart.resize();// 调整岗位图表的大小
         });
 
     });
+    // 初始化岗位图表
     function initJobChart() {
+        // 发送Ajax请求获取数据
         $.ajax({
-            url: '/job/chart',
-            type: 'get',
-            dataType: 'json',
-            success:function (data){
+            url: '/job/chart',// 请求的URL
+            type: 'get',// 请求方法
+            dataType: 'json',// 响应的数据类型
+            success:function (data){// 请求成功时的回调函数
+                // 获取元素并初始化Echarts实例
                 var jobChartDom = document.getElementById('jobChart');
                 myJobChart = echarts.init(jobChartDom);
                 var jobOption;
 
+                // 设置Echarts的选项,这些选项定义了图表的样式和数据
                 jobOption = {
                     title: [{
                         text: '岗位分布',
@@ -287,12 +295,15 @@
                     ]
                 };
 
+                // 应用选项到图表
                 myJobChart.setOption(jobOption);
+                // 调整图表的大小
                 myJobChart.resize();
             }
         });
     }
 
+    // 初始化公司图表
     function initCompanyChart() {
         $.ajax({
             url: '/company/chart',

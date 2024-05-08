@@ -40,20 +40,31 @@ public class HrServiceImpl extends ServiceImpl<HrMapper, Hr> implements HrServic
     @Autowired
     private CompanyMapper companyMapper;
 
+    // 使用@Transactional注解来确保这个方法在一个事务中执行
+    // 如果在执行过程中抛出ServiceException异常，那么事务将会回滚
     @Transactional(rollbackFor = ServiceException.class)
     @Override
     public void unbind(String hrId) throws ServiceException {
+        // 创建一个查询包装器，用于构建查询条件
         QueryWrapper<Job> jobQueryWrapper = new QueryWrapper<>();
+        // 添加查询条件，查找创建者ID为hrId的工作
         jobQueryWrapper.eq("create_hr_id",hrId);
+        // 如果找到了符合条件的工作，那么抛出ServiceException异常
         if(jobMapper.selectCount(jobQueryWrapper)!=0){
             throw new ServiceException("该员工还有发布的工作，请取消后再试");
         }
 
+        // 创建一个查询包装器，用于构建查询条件
         QueryWrapper<Role> roleQueryWrapper = new QueryWrapper<>();
+        // 添加查询条件，查找角色为"manager"的角色
         roleQueryWrapper.eq("role","manager");
+        // 通过hrId查找HR
         Hr hr = hrMapper.selectById(hrId);
+        // 创建一个查询包装器，用于构建查询条件
         QueryWrapper<UserRole> userRoleQueryWrapper = new QueryWrapper<>();
+        // 添加查询条件，查找用户ID为hr.getUserId()，角色ID为roleMapper.selectOne(roleQueryWrapper).getId()的用户角色
         userRoleQueryWrapper.eq("user_id",hr.getUserId()).eq("role_id",roleMapper.selectOne(roleQueryWrapper).getId());
+        // 查找符合条件的用户角色
         UserRole userRole = userRoleMapper.selectOne(userRoleQueryWrapper);
         if(ObjectUtil.isNotNull(userRole)){
             if(userRoleMapper.deleteById(userRole.getId())!=1){

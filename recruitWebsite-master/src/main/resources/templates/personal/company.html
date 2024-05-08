@@ -65,7 +65,9 @@
                 <div class="layui-row filter-row">
                     <span class="layui-col-md1">融资阶段:</span>
                     <span class="layui-col-md11">
+                        <!-- 显示一个不限的选项，点击后会清除融资阶段的筛选条件 -->
                         <a th:href="@{/personal/company?listed=&size={size}(size=${size})}" th:style="${listed==null?'color:#01AAED;':''}">不限</a>
+                        <!-- 使用Thymeleaf的each指令，遍历所有的融资阶段，为每个融资阶段生成一个链接 -->
                         <a th:href="@{/personal/company?listed={listed}&size={size}(listed=${listedStatus.value},size=${size})}"
                            th:each="listedStatus,stat:${application.listedStatusList}" th:text="${listedStatus.value}"
                            th:style="${listed==listedStatus.value?'color:#01AAED;':''}"></a>
@@ -74,7 +76,9 @@
                 <div class="layui-row filter-row">
                     <span class="layui-col-md1">公司规模:</span>
                     <span class="layui-col-md11">
+                        <!-- 显示一个不限的选项，点击后会清除公司规模的筛选条件 -->
                         <a th:href="@{/personal/company?listed={listed}&size=(listed=${listed})}" th:style="${size==null?'color:#01AAED;':''}">不限</a>
+                        <!-- 使用Thymeleaf的each指令，遍历所有的公司规模，为每个公司规模生成一个链接 -->
                         <a th:href="@{/personal/company?listed={listed}&size={size}(size=${sz.value},listed=${listed})}"
                            th:each="sz,stat:${application.sizeList}" th:text="${sz.value}"
                            th:style="${size==sz.value?'color:#01AAED;':''}"></a>
@@ -82,11 +86,17 @@
                 </div>
             </div>
         </div>
+        <!-- 使用Layui的容器组件，用于布局 -->
         <div class="layui-container">
+            <!-- 定义一个Layui的行组件，用于显示公司列表，layui-col-space30表示列与列之间的间距为30px -->
             <div class="layui-row layui-col-space30 company">
+                <!-- 使用Thymeleaf的each指令，遍历所有的公司，为每个公司生成一个div -->
                 <div class="layui-col-md3 company-info" th:each="company,stat:${companyList}">
+                    <!-- 生成一个链接，点击后会跳转到公司详情页面，链接的URL由Thymeleaf的href指令生成 -->
                     <a th:href="@{/company/detail/{id}(id=${company.id})}">
+                        <!-- 显示公司的图标，图标的URL由Thymeleaf的src指令生成 -->
                         <img th:src="@{/pic/companyIcon/{img}(img=${company.img})}" alt="">
+                        <!-- 显示公司的信息 -->
                         <div class="conpany-text">
                             <h4>[[${company.name}]]</h4>
                             <p>[[${company.listedStatus}]] | [[${company.size}]]</p>

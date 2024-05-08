@@ -20,6 +20,7 @@ import java.util.List;
  *
  *
  */
+//获取角色列表（user，admin，hr，manager）
 @Controller
 public class RoleController {
 

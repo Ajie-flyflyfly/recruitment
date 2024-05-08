@@ -4,10 +4,13 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableField;
+import lombok.Data;
+
 import java.io.Serializable;
 
 
 @TableName("t_company")
+@Data
 public class Company implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -49,72 +52,72 @@ public class Company implements Serializable {
     private String size;
 
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getImg() {
-        return img;
-    }
-
-    public void setImg(String img) {
-        this.img = img;
-    }
-
-    public String getIntroduction() {
-        return introduction;
-    }
-
-    public void setIntroduction(String introduction) {
-        this.introduction = introduction;
-    }
-
-    public String getListedStatus() {
-        return listedStatus;
-    }
-
-    public void setListedStatus(String listedStatus) {
-        this.listedStatus = listedStatus;
-    }
-
-    public String getRegistrationTime() {
-        return registrationTime;
-    }
-
-    public void setRegistrationTime(String registrationTime) {
-        this.registrationTime = registrationTime;
-    }
-
-    public String getSize() {
-        return size;
-    }
-
-    public void setSize(String size) {
-        this.size = size;
-    }
-
-    @Override
-    public String toString() {
-        return "Company{" +
-        "id=" + id +
-        ", name=" + name +
-        ", img=" + img +
-        ", introduction=" + introduction +
-        ", listedstatus=" + listedStatus +
-        ", registrationTime=" + registrationTime +
-        ", size=" + size +
-        "}";
-    }
+//    public String getId() {
+//        return id;
+//    }
+//
+//    public void setId(String id) {
+//        this.id = id;
+//    }
+//
+//    public String getName() {
+//        return name;
+//    }
+//
+//    public void setName(String name) {
+//        this.name = name;
+//    }
+//
+//    public String getImg() {
+//        return img;
+//    }
+//
+//    public void setImg(String img) {
+//        this.img = img;
+//    }
+//
+//    public String getIntroduction() {
+//        return introduction;
+//    }
+//
+//    public void setIntroduction(String introduction) {
+//        this.introduction = introduction;
+//    }
+//
+//    public String getListedStatus() {
+//        return listedStatus;
+//    }
+//
+//    public void setListedStatus(String listedStatus) {
+//        this.listedStatus = listedStatus;
+//    }
+//
+//    public String getRegistrationTime() {
+//        return registrationTime;
+//    }
+//
+//    public void setRegistrationTime(String registrationTime) {
+//        this.registrationTime = registrationTime;
+//    }
+//
+//    public String getSize() {
+//        return size;
+//    }
+//
+//    public void setSize(String size) {
+//        this.size = size;
+//    }
+//
+//    @Override
+//    public String toString() {
+//        return "Company{" +
+//        "id=" + id +
+//        ", name=" + name +
+//        ", img=" + img +
+//        ", introduction=" + introduction +
+//        ", listedstatus=" + listedStatus +
+//        ", registrationTime=" + registrationTime +
+//        ", size=" + size +
+//        "}";
+//    }
 }

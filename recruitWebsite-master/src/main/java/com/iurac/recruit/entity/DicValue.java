@@ -4,16 +4,13 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.Data;
+
 import java.io.Serializable;
 
-/**
- * <p>
- * 
- * </p>
- *
- *
- */
+
 @TableName("t_dic_value")
+@Data
 public class DicValue implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -42,53 +39,53 @@ public class DicValue implements Serializable {
     @TableField(exist = false)
     private String type;
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public Integer getOrderNo() {
-        return orderNo;
-    }
-
-    public void setOrderNo(Integer orderNo) {
-        this.orderNo = orderNo;
-    }
-
-    public String getTypeId() {
-        return typeId;
-    }
-
-    public void setTypeId(String typeId) {
-        this.typeId = typeId;
-    }
-
-    @Override
-    public String toString() {
-        return "DicValue{" +
-        "id=" + id +
-        ", value=" + value +
-        ", orderNo=" + orderNo +
-        ", typeId=" + typeId +
-        "}";
-    }
+//    public String getType() {
+//        return type;
+//    }
+//
+//    public void setType(String type) {
+//        this.type = type;
+//    }
+//
+//    public String getId() {
+//        return id;
+//    }
+//
+//    public void setId(String id) {
+//        this.id = id;
+//    }
+//
+//    public String getValue() {
+//        return value;
+//    }
+//
+//    public void setValue(String value) {
+//        this.value = value;
+//    }
+//
+//    public Integer getOrderNo() {
+//        return orderNo;
+//    }
+//
+//    public void setOrderNo(Integer orderNo) {
+//        this.orderNo = orderNo;
+//    }
+//
+//    public String getTypeId() {
+//        return typeId;
+//    }
+//
+//    public void setTypeId(String typeId) {
+//        this.typeId = typeId;
+//    }
+//
+//    @Override
+//    public String toString() {
+//        return "DicValue{" +
+//        "id=" + id +
+//        ", value=" + value +
+//        ", orderNo=" + orderNo +
+//        ", typeId=" + typeId +
+//        "}";
+//    }
 }

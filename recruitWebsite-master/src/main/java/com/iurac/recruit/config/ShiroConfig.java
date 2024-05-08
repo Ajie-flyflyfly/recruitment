@@ -14,8 +14,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-public class ShiroConfig {
+public class  ShiroConfig {
 
+    // ShiroDialect 用于将 Shiro 集成到 Thymeleaf 模板中，允许在 HTML 模板中使用 Shiro 特定的标签
     @Bean
     public ShiroDialect shiroDialect(){
         return new ShiroDialect();
@@ -27,7 +28,9 @@ public class ShiroConfig {
 
         //新建密码匹配器
         HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
+        //设置加密算法：md5
         hashedCredentialsMatcher.setHashAlgorithmName("md5");
+        //设置加密次数
         hashedCredentialsMatcher.setHashIterations(1024);
         //给自定义域设置该匹配器
         customerRealm.setCredentialsMatcher(hashedCredentialsMatcher);
@@ -43,6 +46,17 @@ public class ShiroConfig {
         return securityManager;
     }
 
+    /**
+     *
+     * ShiroFilterFactoryBean Bean：
+     * shiroFilterFactoryBean 配置 Shiro 过滤器链。
+     * 它定义了哪些 URL 受保护，应用哪些过滤器。
+     * 提供的代码设置了以下内容：
+     * securityManager：设置安全管理器。
+     * URL 映射：指定 URL 和对应的过滤器。
+     * anon 过滤器：表示匿名访问，不需要认证。
+     * authc 过滤器：表示需要认证才能访问。
+     * */
     @Bean
     public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager){
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();

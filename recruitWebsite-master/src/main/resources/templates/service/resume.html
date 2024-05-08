@@ -21,7 +21,7 @@
 <body>
 <div class="layui-layout layui-layout-admin">
 
-    <div th:replace="front-common::header('')"></div>
+    <div th:replace="front-common::header('resume')"></div>
 
     <div class="layui-layout-body" style="margin-top: 50px;background-color: #f8f8f8;">
         <div class="layui-container container">
@@ -179,16 +179,20 @@
 </div>
 <script th:inline="javascript">
 
+    // 使用layui的form和laydate模块
     layui.use(['form','laydate'], function(){
+        // 获取layui的form和laydate实例
         var form = layui.form;
         var laydate = layui.laydate;
         var $ = layui.jquery;
 
+        // 渲染日期选择器
         laydate.render({
-            elem: '#birth'
+            elem: '#birth'// 指定元素
             ,value: [[${resumeInfo==null?'':resumeInfo.birth}]]
         });
 
+        // 给表单赋值
         form.val("resumeForm", { //formTest 即 class="layui-form" 所在元素属性 lay-filter="" 对应的值
             "name": [[${resumeInfo==null?'':resumeInfo.name}]]
             ,"sex": [[${resumeInfo==null?'':resumeInfo.sex}]]
@@ -208,7 +212,9 @@
             ,"introduction": [[${resumeInfo==null?'':resumeInfo.introduction}]]
         });
 
+        // 处理表单提交事件
         form.on('submit(submit)', function(data){
+            // 创建一个FormData对象
             var formFile = new FormData(document.getElementById('resumeForm'));
             $.ajax({
                 url: '/resume/saveOrUpdate',
@@ -232,7 +238,9 @@
             return false;
         });
 
+        // 处理重置按钮点击事件
         $("#resetBtn").click(function (){
+            // 重新给表单赋值
             form.val("resumeForm", { //formTest 即 class="layui-form" 所在元素属性 lay-filter="" 对应的值
                 "name": [[${resumeInfo==null?'':resumeInfo.name}]]
                 ,"sex": [[${resumeInfo==null?'':resumeInfo.sex}]]
@@ -253,7 +261,9 @@
             });
         })
 
+        // 处理复制按钮点击事件
         $("#copy").click(function (){
+            // 创建一个新的input元素
             var obj = document.getElementById("resumeHtml");
             var input = document.createElement("input");
             document.body.appendChild(input);
@@ -274,6 +284,7 @@
             }
         })
 
+        // 处理图片选择框的change事件
         $("#img").change(function (){
             if(this.files.length){
                 let file = this.files[0];
@@ -289,6 +300,7 @@
     })
 
 
+    // 处理隐藏文件输入框的change事件
     function onHiddenFile() {
         var dd = $("#img").val().split("\\");
         $("#showImgName").val(dd[dd.length - 1]);

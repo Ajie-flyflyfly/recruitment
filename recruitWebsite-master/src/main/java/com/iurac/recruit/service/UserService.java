@@ -5,17 +5,13 @@ import com.iurac.recruit.entity.Role;
 import com.iurac.recruit.entity.User;
 import com.iurac.recruit.exception.ManageException;
 import com.iurac.recruit.vo.PageResultVo;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * <p>
- *  服务类
- * </p>
- *
- *
- */
 
+
+@Service
 public interface UserService extends IService<User> {
 
     void register(User user, String role) throws Exception;

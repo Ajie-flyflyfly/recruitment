@@ -32,8 +32,6 @@ import java.io.IOException;
  * <p>
  *  前端控制器
  * </p>
- *
- *
  */
 @Controller
 public class ResumeController {
@@ -42,6 +40,7 @@ public class ResumeController {
     private ResumeService resumeService;
 
 
+    //用户新增/修改简历 service/resume.html
     @PostMapping("/resume/saveOrUpdate")
     @ResponseBody
     public Result saveOrUpdate(Resume resume,
@@ -93,6 +92,7 @@ public class ResumeController {
     }
 
 
+    //管理员简历管理中的简历搜索 admin/manage/resume.html
     @RequiresRoles("admin")
     @ResponseBody
     @GetMapping("/resume/getByCondition")
@@ -102,6 +102,7 @@ public class ResumeController {
         return new TableResult(0,"",pageResultVo.getTotal(),pageResultVo.getRecords());
     }
 
+    //管理员编辑简历 /manage/resume.html
     @RequiresRoles("admin")
     @ResponseBody
     @PostMapping("/resume/update/{id}")
@@ -126,6 +127,7 @@ public class ResumeController {
         return resumeService.updateById(resume)?Result.succ("操作成功"):Result.fail("操作失败");
     }
 
+    //管理员删除简历 /manage/resume.html
     @RequiresRoles("admin")
     @ResponseBody
     @PostMapping("/resume/delete/{id}")
@@ -134,6 +136,8 @@ public class ResumeController {
         return Result.succ("操作成功");
     }
 
+    //用户生成简历
+    //将用户的简历信息返回给前端
     @RequiresUser
     @GetMapping("/resume/detail")
     public String detail(Model model) throws ServiceException {

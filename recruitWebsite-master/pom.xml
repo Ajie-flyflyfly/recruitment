@@ -52,6 +52,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <!-- Spring Boot DevTools提供了一些便利的开发者工具，如自动重启、实时加载等，可以提高开发效率。-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -69,6 +70,7 @@
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>3.4.2</version>
         </dependency>
+        <!-- Apache Velocity是一个Java库，用于模板引擎，它提供了一个简单但强大的模板语言来引用对象定义在Java代码中。-->
         <dependency>
             <groupId>org.apache.velocity</groupId>
             <artifactId>velocity-engine-core</artifactId>
@@ -91,7 +93,7 @@
             <artifactId>druid-spring-boot-starter</artifactId>
             <version>1.2.6</version>
         </dependency>
-        <!-- kaptcha-->
+        <!-- kaptcha验证码-->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>kaptcha-spring-boot-starter</artifactId>
@@ -113,6 +115,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
         </dependency>
     </dependencies>
 

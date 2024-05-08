@@ -41,6 +41,7 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
     @Autowired
     private RoleMapper roleMapper;
 
+    //公司入住功能（同时用户将增加manager身份，添加到hr表中）
     @Override
     @Transactional(rollbackFor = ServiceException.class)
     public void join(String id, Company company) throws ServiceException {

@@ -26,6 +26,12 @@
         }
     </style>
 
+<!--这段代码是Layui框架中的一部分，用于创建一个工具栏和一个操作栏。
+这两个栏位都包含一些按钮，每个按钮都有一个lay-event属性，这个属性用于指定当按钮被点击时应该触发的事件。-->
+<!--在toolbar模板中，有两个按钮：一个用于删除选中的行，另一个用于新增行。-->
+<!--在bar模板中，有三个按钮：一个用于编辑当前行，一个用于删除当前行，还有一个用于封禁或解封当前行。-->
+<!--这些模板应该被用在Layui的表格组件中。当你创建一个表格时，你可以指定这些模板作为工具栏或操作栏。
+然后，你可以在你的JavaScript代码中监听这些lay-event事件，并在事件被触发时执行相应的操作。-->
     <script type="text/html" id="toolbar">
         <div class="layui-btn-container">
             <button lay-event="deletes" class="layui-btn layui-btn-danger">删除选中行</button>
@@ -38,70 +44,85 @@
         <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="lock">封禁/解封</a>
     </script>
     <script th:inline="javascript">
+        //用户管理模块中的搜索条
+        // 使用Layui的table、element、laydate和form模块
         layui.use(['table','element','laydate','form'], function(){
+            // 获取Layui的模块实例
             var table = layui.table;
             var element = layui.element;
             var laydate = layui.laydate;
             var form = layui.form;
 
+            // 渲染日期选择器
             laydate.render({
-                elem: '#search-createTime'
-                ,range: true
+                elem: '#search-createTime'// 指定要渲染的元素
+                ,range: true// 设置为范围选择器
             });
 
+            // 清空两个HTML元素的内容
             $("#search-role").html("");
             $("role").html("");
+
+            // 发送Ajax请求获取角色列表
             $.ajax({
                 url: '/dictionary/getRoleList',
                 type:"get",
                 dataType:"json",
-                success:function (data){
+                success:function (data){// 请求成功时的回调函数
+                    // 初始化HTML字符串
                     var selectHtml = "<option value=\"\">请选择角色</option>";
                     var checkHtml = '';
+                    // 遍历响应数据，为每个角色创建一个option元素和一个checkbox元素
                     $.each(data,function (i,n){
                         selectHtml += "<option value='"+n.id+"'>"+n.role+"</option>";
                         checkHtml += "<input type='checkbox' name='role' value='"+n.id+"' id='"+n.id+"' lay-skin='primary' title='"+n.role+"'>"
                     });
+                    // 将创建的元素添加到HTML元素中
                     $("#search-role").html(selectHtml);
                     $("#role").html(checkHtml);
+                    // 重新渲染表单
                     form.render(null,"searchUserInfoForm");
                 }
             });
 
+            //搜索按钮
             $("#searchBtn").click(function () {
                 reload();
             });
+            //重置按钮
             $("#resetBtn").click(function () {
                 tableIns.reload({
-                    where: {
+                    where: {// 新的查询条件
                         "username": '',
                         "startDate": '',
                         "endDate": '',
                         "role": '',
                         "locked": ''
                     }
-                    , page: {
+                    , page: {// 新的页码
                         curr: 1
                     }
                 });
             });
 
+            //用户管理的用户搜索结果表格
+            // 使用Layui的table模块渲染一个表格
             var tableIns = table.render({
-                elem: '#userTable'
-                , url: '/user/getByCondition'
-                , toolbar: '#toolbar'
-                , where: {
+                elem: '#userTable'// 指定要渲染的元素
+                , url: '/user/getByCondition'// 获取表格数据的URL
+                , toolbar: '#toolbar'// 表格的工具栏模板
+                , where: {// 查询条件
                     "username": $('#search-username').val(),
                     "startDate": $("#search-createTime").val().split(" - ")[0],
                     "endDate": $("#search-createTime").val().split(" - ")[1]!=null?$("#search-createTime").val().split(" - ")[1]:"",
                     "role": $('#search-role').val(),
                     "locked": ''
                 }
-                , defaultToolbar: []
-                , page: true
-                , limits: [5, 10, 20]
-                , limit: 10
-                , cols: [
+                , defaultToolbar: []// 不使用默认的工具栏
+                , page: true// 启用分页
+                , limits: [5, 10, 20]// 分页的选项
+                , limit: 10 // 默认的每页显示的行数
+                , cols: [ // 表格的列配置
                     [
                         {type: 'checkbox', fixed: 'left'}
                         , {field: 'id', title: 'ID', hide: true}
@@ -109,9 +130,10 @@
                         , {field: 'img', title: '头像', templet: function (d) {
                             var fileName = d.img;
                             return '<div><img src="'+[[@{/pic/userIcon/}]] + fileName + '" alt="暂无图片"></div>'
+                            // return '<div><img src="@{/pic/userIcon/}${fileName}" alt="暂无图片"></div>';
                         }}
                         , {field: 'createTime', title: '注册时间'}
-                        , {field: 'locked', title: '头像', templet: function (d) {
+                        , {field: 'locked', title: '账号状态', templet: function (d) {
                             var lock = d.locked;
                             if(lock*1!==0){
                                 return '<span style="color:red;">已锁定</span>';
@@ -129,7 +151,7 @@
                         }}
                         , {title: '操作', fixed: 'right', width: 135, toolbar: '#bar'}
                     ]
-                ], done: function (res, curr, count) {
+                ], done: function (res, curr, count) {// 表格渲染完成后的回调函数
                     //初始化高度，使得冻结行表体高度一致
                     $(".layui-table-body tr").each(function (index, val) {
                         $($(".layui-table-fixed .layui-table-body table tr")[index]).height($(val).height());
@@ -152,22 +174,31 @@
                 }
             });
 
+            // 定义一个正则表达式用于验证手机号
             var rePhone = /^(13\d|14[579]|15[^4\D]|17[^49\D]|18\d)\d{8}$/;
+            // 定义一个正则表达式用于验证电子邮件地址
             var reEmail = /^\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}$/;
 
-            //监听工具条
+            //这行代码是监听表格的工具条事件。
+            // 'tool(userTable)' 表示监听的是id为'userTable'的表格的工具条事件。
+            // function (obj) {...} 是事件处理函数，参数obj包含了事件的相关信息。
             table.on('tool(userTable)', function (obj) {
+                // 获取当前行的数据
                 var data = obj.data;
+                // 判断用户点击的是哪个工具条按钮
                 switch (obj.event) {
+                    // 如果用户点击的是删除按钮
                     case 'delete':
+                        // 弹出确认框
                         layer.confirm('真的删除么', function (index) {
+                            // 如果用户确认删除，则通过ajax向服务器发送删除请求
                             $.ajax({
                                 url : [['/user/delete/']]+data.id,
                                 type : 'post',
                                 dataType : 'json',
                                 success : function(n) {
                                     if (n.success) {
-                                        reload();
+                                        reload();//重新加载表格
                                     }else {
                                         layer.msg("删除用户失败,"+n.msg);
                                     }
@@ -176,6 +207,7 @@
                                     layer.msg("删除用户失败,"+n.responseJSON.msg);
                                 }
                             });
+                            // 关闭确认框
                             layer.close(index);
                         });
                         break;
@@ -198,6 +230,7 @@
                         });
                         break;
                     case 'edit':
+                        // 弹出一个包含用户信息的表单的弹出层
                         layer.open({
                             type: 1,
                             area: ['800px', '520px'],
@@ -206,6 +239,7 @@
                             btn: ['确定', '取消'],
                             content: $('#userInfoFrame'),
                             success: function (index, layero) {
+                                // 在弹出层显示时，初始化表单
                                 $("#userInfoForm")[0].reset();
                                 $("#showImg").attr('src',[['/pic/userIcon/']]+data.img);
                                 $("#username").val(data.username);
@@ -224,6 +258,7 @@
                                 layui.form.render();
                             },
                             yes: function (index, layero) {
+                                // 如果用户点击确定按钮，则通过ajax向服务器发送更新请求
                                 var password = $("#password").val();
                                 var confPassword = $("#confPassword").val();
                                 var phone = $("#phone").val();
@@ -265,6 +300,7 @@
                                     processData: false,
                                     contentType:false,
                                     success : function(n) {
+                                        // 如果更新成功，则关闭弹出层并重新加载表格
                                         if (n.success) {
                                             layer.msg("修改用户信息成功");
                                             layer.close(index);
@@ -279,15 +315,17 @@
                                 });
                             },
                             end: function (res) {
+                                // 在弹出层关闭时，清理表单
                                 $("#username").removeAttr("disabled");
                                 $("#userInfoFrame").css("display", 'none');
                             }
                         });
                         break;
-                }
-                ;
+                };
             });
+            // 监听表格的头部工具条事件
             table.on('toolbar(userTable)', function (obj) {
+                // 获取表格的选中状态
                 var checkStatus = table.checkStatus(obj.config.id);
                 switch (obj.event) {
                     case 'deletes':
@@ -296,6 +334,7 @@
                         console.log(data);
                         if (size != 0) {
                             layer.confirm('真的删除么', function (index) {
+                                //批量删除
                                 for (let i = 0; i < size; i++) {
                                     $.ajax({
                                         url : [['/user/delete/']]+data[i].id,
@@ -317,10 +356,12 @@
                                 reload();
                             });
                         } else {
-                            layer.msg("请勾选要删除的图书");
+                            layer.msg("请勾选要删除的用户");
                         }
                         break;
+                    // 如果用户点击的是新增按钮
                     case 'save':
+                        // 弹出一个空的表单的弹出层
                         layer.open({
                             type: 1,
                             area: ['800px', '520px'],
@@ -329,12 +370,14 @@
                             btn: ['确定', '取消'],
                             content: $('#userInfoFrame'),
                             success: function (index, layero) {
+                                // 在弹出层显示时，初始化表单
                                 $("#userInfoForm")[0].reset();
                                 $("#showImg").attr('src',[['/pic/userIcon/default.png']]);
                                 $("[name='role']").removeAttr("checked");
                                 layui.form.render();
                             },
                             yes: function (index, layero) {
+                                // 如果用户点击确定按钮，则通过ajax向服务器发送添加请求
                                 var username = $("#username").val();
                                 var password = $("#password").val();
                                 var confPassword = $("#confPassword").val();
@@ -391,6 +434,7 @@
                                 });
                             },
                             end: function (res) {
+                                // 在弹出层关闭时，清理表单
                                 $("#userInfoFrame").css("display", 'none');
                             }
                         });
@@ -399,6 +443,7 @@
                 ;
             });
 
+            // 重新加载表格数据
             function reload() {
                 tableIns.reload({
                     where: {
@@ -414,6 +459,9 @@
                 });
             }
 
+            // 这个函数是图片选择框的 change 事件处理函数。当用户选择了一个新的图片文件后，这个函数会被调用。
+            // 它首先获取用户选择的文件，然后创建一个 FileReader 对象来读取文件内容。
+            // 当文件内容被读取完毕后，它将文件内容（一个DataURL）设置为图片预览框的 src 属性，从而显示图片预览。
             $("#img").change(function (){
                 if(this.files.length){
                     let file = this.files[0];
@@ -427,6 +475,8 @@
 
         });
 
+        // 这个函数用于处理隐藏文件输入框的 change 事件。当用户选择了一个新的文件后，这个函数会被调用。
+        // 它首先获取用户选择的文件的路径，然后从路径中提取出文件名，最后将文件名设置为显示文件名的输入框的值。
         function onHiddenFile() {
             var dd = $("#img").val().split("\\");
             $("#showImgName").val(dd[dd.length - 1]);
@@ -486,6 +536,7 @@
 </div>
 
 </body>
+<!--用户信息表单-->
 <div id="userInfoFrame" style="display:none;">
     <form class="layui-form" lay-filter="userInfoForm" id="userInfoForm" style="padding-right:30px">
         <div class="layui-form-item" style="display: flex;flex-direction: column;align-items: center;justify-content: flex-start;">

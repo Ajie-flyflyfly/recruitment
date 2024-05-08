@@ -159,24 +159,33 @@
 
     <div th:replace="front-common::header('message')"></div>
 
+    <!-- 主体部分，设置了上边距和背景颜色 -->
     <div class="layui-layout-body" style="margin-top: 50px;background-color: #f8f8f8;">
+        <!-- 容器，用于包含所有内容 -->
         <div class="layui-container container">
-                <div class="left-menu">
-                    <div class="menu-title">
-                        <img th:src="@{/pic/userIcon/{img}(img=${userInfo.img})}">
+            <!-- 左侧菜单部分 -->
+            <div class="left-menu">
+                <!-- 菜单标题部分，显示当前用户的信息 -->
+                <div class="menu-title">
+                    <!-- 显示当前用户的头像 -->
+                    <img th:src="@{/pic/userIcon/{img}(img=${userInfo.img})}">
                         <span>当前用户：</span>
+                        <!-- 显示当前用户的用户名 -->
                         <span th:text="${userInfo.username}"></span>
                     </div>
+                    <!-- 聊天列表部分 -->
                     <div style="overflow: hidden;">
-                        <ul id="chatList" style="width: 340px;overflow-y: auto;overflow-x: hidden;height: 460px;">
-
-                        </ul>
+                        <!-- 聊天列表，用于显示所有的聊天 -->
+                        <ul id="chatList" style="width: 340px;overflow-y: auto;overflow-x: hidden;height: 460px;"></ul>
                     </div>
                 </div>
+                <!-- 右侧内容部分 -->
                 <div class="right-content">
+                    <!-- 内容标题部分，显示聊天对象的用户名 -->
                     <div class="content-title">
                         <span id="userName"></span>
                     </div>
+                    <!-- 聊天消息部分 -->
                     <div class="content-message" id="messageContent">
                         <ul id="message-content">
 <!--                            <li class="msg-item">-->
@@ -188,12 +197,14 @@
 <!--                            </li>-->
                         </ul>
                     </div>
+                    <!-- 编辑区域，用于输入新的聊天消息，初始状态为隐藏 -->
                     <div id="edit" class="content-edit" style="display:none;">
                         <textarea id="message"></textarea>
                     </div>
+                    <!-- 底部区域，包含发送和重置按钮，初始状态为隐藏 -->
                     <div id="footer" class="content-footer" style="display:none;">
                         <button type="button" id="submit" class="layui-btn layui-btn-xs layui-btn-primary" style="margin-left: 10px;">发送</button>
-                        <button type="button" id="reset" class="layui-btn layui-btn-xs layui-btn-primary">重置</button>
+<!--                        <button type="button" id="reset" class="layui-btn layui-btn-xs layui-btn-primary">重置</button>-->
                     </div>
                 </div>
             </div>
@@ -204,23 +215,29 @@
 
 </div>
 <script th:inline="javascript">
+    // 定义两个全局变量，toUser用于存储当前聊天的用户，chatList用于存储聊天列表。
     var toUser ;
     var chatList ;
 
+    // 使用jQuery的ready方法，当DOM加载完成后执行函数。
     $(function () {
+        // 初始化聊天列表。
         initChatList();
 
+        // 创建一个WebSocket对象，连接到服务器。
         var ws = new WebSocket("ws://localhost:8080/message");
 
         ws.onopen = function (ev) {
             layer.msg("成功进入私信",{icon:'6'});
         }
 
-        //接受消息
+        // 当接收到服务器发送的消息时，处理消息。
         //ev:{fromUserId: "xxx", content: "...", sendTime: "xxx" }
         ws.onmessage = function (ev) {
+            // 解析服务器发送的JSON格式的消息。
             var res = JSON.parse(ev.data);
 
+            // 如果当前聊天的用户是消息的发送者，将消息添加到聊天内容区域。
             if (toUser!==undefined && toUser.id === res.fromUserId) {
                 var str = '<li class="msg-item">' +
                           '    <span class="timeText">'+res.sendTime+'</span>\n' +
@@ -232,7 +249,7 @@
                 $("#message-content").append(str);
                 var div = document.getElementById('messageContent');
                 div.scrollTop = div.scrollHeight;
-            }else{
+            }else{// 如果当前聊天的用户不是消息的发送者，更新聊天列表的未读消息数。
                 let chat = chatList.find(chat => {
                     return chat.toUserId === res.fromUserId;
                 });
@@ -244,14 +261,17 @@
                     initChatList();
                 }
             }
+            // 更新聊天列表的最新消息和发送时间。
             $("#latestMessage-"+res.fromUserId).text(res.content);
             $("#sendTime-"+res.fromUserId).text(res.sendTime);
         }
 
+        // 当WebSocket连接关闭时，显示一条消息。
         ws.onclose = function (ev) {
             layer.msg("网络中断，已断开连接，请刷新页面重试",{icon:'5'});
         }
 
+        // 当用户点击发送按钮时，发送一条消息到服务器。
         $("#submit").click(function () {
             //获取输入的内容
             var data = $("#message").val();
@@ -299,23 +319,29 @@
             ws.send(JSON.stringify(json));
         })
 
+        // 当用户点击聊天列表项时，切换到该用户的聊天。
         $("#chatList").on("click","li",function (){
             chat($(this)[0].id);
         })
 
     });
 
+    // 加载特定用户的聊天历史
     function chat(id){
+        // 清空消息内容区域和未读消息计数
         $("#message-content").html('');
         $("#unread-"+id).attr("class","");
         $("#unread-"+id).text('');
+        // 显示消息输入区域和发送/重置按钮
         $("#footer").css("display",'');
         $("#edit").css("display",'');
         var html = '';
+        // 向服务器发送AJAX GET请求以检索聊天历史
         $.ajax({
             url: '/message/chat/'+id,
             type:'get',
             success:function (data) {
+                // 成功时，使用接收到的消息更新聊天界面，并滚动到聊天历史的底部
                 toUser = data.data.toUser;
                 $("#userName").html(data.data.toUser.username);
                 $.each(data.data.chatMessageList,function (i,n){
@@ -344,11 +370,14 @@
         div.scrollTop = div.scrollHeight;
     }
 
+    // 初始化聊天列表
     function initChatList(){
+        // 向服务器发送AJAX GET请求以检索聊天列表
         $.ajax({
             url: '/message/getChatListVoList',
             type:'get',
             success:function (data) {
+                // 成功时，使用接收到的聊天对话更新聊天列表界面，并用徽章标记任何未读消息
                 chatList = data.data.chatListVos;
                 $("#chatList").html("");
                 var chatListHtml = '';
@@ -380,6 +409,7 @@
         });
     }
 
+    // 获取当前日期和时间的特定格式
     function getTime(){
         var date = new Date();
         var seperator1 = "-";

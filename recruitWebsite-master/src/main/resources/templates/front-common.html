@@ -2,10 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head th:fragment="commonCss(title,links,script,style)">
+    <!--定义字符集和响应式视口设置-->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title th:replace="${title}">Title</title>
 
+    <!--CSS 和 JavaScript 链接-->
     <link rel="stylesheet" th:href="@{/layui/css/layui.css}">
     <link rel="stylesheet" th:href="@{/layui/css/modules/layer/default/layer.css}">
     <script th:src="@{/layui/layui.js}"></script>
@@ -19,10 +21,15 @@
 <body>
 
 <div th:fragment="header(thispage)" class="layui-header">
+    <!--使用 Thymeleaf 和 layui 框架创建的导航栏（navbar）。
+    它展示了如何根据 thispage 变量的值来高亮显示当前选中的导航项，并使用 Thymeleaf 的表达式为每个导航项设置链接。-->
     <ul class="layui-nav">
         <li class="layui-nav-item">
             <a onclick="location.href='/index'" style="font-weight: bold;color: #5FB878;font-size: x-large;">IT人才招聘</a>
         </li>
+        <!--使用 Thymeleaf 的条件类（th:class）来动态设置导航项的样式类，从而高亮显示当前选中的导航项。-->
+        <!--根据 thispage 变量的值设置导航项的样式类。-->
+        <!--使用 Thymeleaf 的链接表达式设置导航项的链接-->
         <li th:class="${thispage=='index'? 'layui-nav-item layui-this':'layui-nav-item'}">
             <a th:href="@{/index}">首页</a>
         </li>
@@ -33,6 +40,8 @@
             <a th:href="@{/personal/company}">公司</a>
         </li>
     </ul>
+    <!--使用 Thymeleaf、Shiro 和 layui 框架创建的用户导航栏（navbar）示例。
+    它根据用户的登录状态和角色动态显示不同的导航项，并使用 Thymeleaf 和 Shiro 的标签来设置链接和权限-->
     <ul class="layui-nav layui-layout-right">
         <shiro:guest>
             <li class="layui-nav-item"><a th:href="@{/login}">先登录，查看更多职位信息!</a></li>
@@ -40,24 +49,33 @@
         </shiro:guest>
         <shiro:user>
             <shiro:hasRole name="user">
-                <li class="layui-nav-item"><a th:href="@{/service/resume}">我的简历</a></li>
+<!--                <li class="layui-nav-item"><a th:href="@{/service/resume}">我的简历</a></li>-->
+                <li th:class="${thispage=='resume'? 'layui-nav-item layui-this':'layui-nav-item'}">
+                    <a th:href="@{/service/resume}">我的简历</a>
+                </li>
             </shiro:hasRole>
             <shiro:hasRole name="hr">
-                <li class="layui-nav-item"><a th:href="@{/service/company/hr}">公司管理</a></li>
+<!--                <li class="layui-nav-item"><a th:href="@{/service/company/hr}">公司管理</a></li>-->
+                <li th:class="${thispage=='company-manage'? 'layui-nav-item layui-this':'layui-nav-item'}">
+                    <a th:href="@{/service/company/hr}">公司管理</a>
+                </li>
             </shiro:hasRole>
             <shiro:hasRole name="admin">
                 <li class="layui-nav-item"><a th:href="@{/admin/index}">后台入口</a></li>
             </shiro:hasRole>
+            <!-- 用户信息、个人资料和退出登录的导航项 -->
             <li class="layui-nav-item layui-hide layui-show-md-inline-block">
-                <a href="javascript:;">
+                <a href="javascript:">
                     <img th:src="@{/pic/userIcon/{img}(img=${userInfo.img})}"
                          class="layui-nav-img">
                     <span shiro:principal property="username"></span>
                 </a>
                 <dl class="layui-nav-child">
-                    <dd th:class="${thispage=='information'? 'layui-this':''}"><a
-                            th:href="@{/setting/information}">个人资料</a></dd>
-                    <dd th:class="${thispage=='message'? 'layui-this':''}"><a th:href="@{/setting/message}">我的私信</a>
+                    <dd th:class="${thispage=='information'? 'layui-this':''}">
+                        <a th:href="@{/setting/information}">个人资料</a>
+                    </dd>
+                    <dd th:class="${thispage=='message'? 'layui-this':''}">
+                        <a th:href="@{/setting/message}">我的私信</a>
                     </dd>
                     <dd><a th:href="@{/logout}">退出登录</a></dd>
                 </dl>
@@ -80,14 +98,14 @@
         <a th:href="@{/service/company/join}">关联公司</a>
     </li>
     <li th:unless="${hrInfo==null}" th:class="${thisFrame=='hr'?'layui-nav-item layui-this':'layui-nav-item'}">
-        <a th:href="@{/service/company/hr}">HR信息</a>
+        <a th:href="@{/service/company/hr}">HR主页</a>
     </li>
     <shiro:hasRole name="manager">
         <li th:class="${thisFrame=='job'?'layui-nav-item layui-this':'layui-nav-item'}">
             <a th:href="@{/service/company/jobManage}">岗位管理</a>
         </li>
         <li th:class="${thisFrame=='staff'?'layui-nav-item layui-this':'layui-nav-item'}">
-            <a th:href="@{/service/company/staffManage}">员工管理</a>
+            <a th:href="@{/service/company/staffManage}">HR管理</a>
         </li>
         <li th:class="${thisFrame=='info'?'layui-nav-item layui-this':'layui-nav-item'}">
             <a th:href="@{/service/company/info}">公司简介</a>

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head th:replace="front-common :: commonCss(~{::title},~{},~{},~{::style})">
-    <title>hr信息</title>
+    <title>HR主页</title>
     <style type="text/css">
         .container{
             display: flex;
@@ -22,13 +22,14 @@
 <body>
 <div class="layui-layout layui-layout-admin">
 
-    <div th:replace="front-common::header('information')"></div>
+    <div th:replace="front-common::header('company-manage')"></div>
 
     <div class="layui-layout-body" style="margin-top: 50px;background-color: #f8f8f8;">
         <div class="layui-container container">
             <div th:replace="front-common::manageSide('hr')"></div>
             <div class="content">
                 <div class="layui-fluid">
+                    <!--字段集-->
                     <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
                         <legend>管理岗位</legend>
                     </fieldset>
@@ -252,6 +253,29 @@
                             ]
                         ]
                     });
+
+                    table.on('tool(jobTable)', function(obj){
+                        var data = obj.data; //获取当前行数据
+                        if(obj.event === 'delete'){ //如果点击的是取消发布按钮
+                            $.ajax({
+                                url: '/job/unpublish/'+data.id,
+                                async:false,
+                                type:"post",
+                                dataType:"json",
+                                success:function (n){
+                                    if(!n.success){
+                                        layer.msg("取消发布失败,"+n.msg);
+                                    } else {
+                                        layer.msg("取消发布成功");
+                                        obj.del(); //删除表格中的这一行
+                                    }
+                                },
+                                error: function() {
+                                    layer.msg("请求失败");
+                                }
+                            });
+                        }
+                    });
                 },
                 end: function (res) {
                     $("#jobFrame").css("display",'none');
@@ -270,6 +294,7 @@
     </table>
 </div>
 
+<!--发布岗位所需填写的信息-->
 <div style="display:none;" id="saveJobFrame">
     <form class="layui-form layui-form-pane" id="saveJobInfoForm" lay-filter="saveJobInfoForm" style="padding: 30px;">
         <div class="layui-form-item">

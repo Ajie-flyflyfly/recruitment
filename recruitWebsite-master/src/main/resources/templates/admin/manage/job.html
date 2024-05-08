@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head th:replace="admin/end-common::commonCss(~{::title},~{},~{::script},~{::style})">
@@ -22,6 +22,7 @@
 
             form.on('select(search-province)', function(data){
                 $("#search-city").html("");
+                // 获取城市列表
                 $.ajax({
                     url: '/dictionary/getCityList/'+data.value,
                     type:"get",
@@ -39,6 +40,7 @@
             });
             form.on('select(search-type)', function(data){
                 $("#search-business").html("");
+                // 获取岗位列表
                 $.ajax({
                     url: '/dictionary/getBusinessList/'+data.value,
                     type:"get",
@@ -80,6 +82,7 @@
                 });
             });
 
+            // 根据条件搜索返回岗位进行展示
             var tableIns = table.render({
                 elem: '#jobTable'
                 , url: '/job/getByCondition'
@@ -91,6 +94,7 @@
                     "area": $('#search-city').find("option:selected").text(),
                     "business": $('#search-business').find("option:selected").text()
                 }
+                // 岗位列表展示
                 , defaultToolbar: []
                 , page: true
                 , limits: [5, 10, 20]
@@ -117,6 +121,7 @@
             ]
         });
 
+            // 删除岗位
             table.on('tool(jobTable)', function(obj){
                 var data = obj.data;
                 switch(obj.event){
@@ -144,6 +149,7 @@
                 }
             });
 
+            // 根据条件请求岗位列表
             function reload() {
                 tableIns.reload({
                     where: {
@@ -170,7 +176,8 @@
 
     <div class="layui-body body">
         <div class="layui-fluid" style="padding: 15px;">
-            <div class="layui-card">
+            < class="layui-card">
+<!--                岗位搜索条件框-->
                 <form lay-filter="jobInfoForm" id="jobInfoForm" class="layui-form layui-card-header" style="padding: 15px;height: auto">
                     <div class="layui-form-item">
                         <div class="layui-inline" style="width:250px;">
@@ -231,7 +238,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </form>
 
                 <div class="layui-card-body">
                     <div style="padding-bottom:10px;">
@@ -239,8 +246,6 @@
                         </table>
                     </div>
                 </div>
-
-            </form>
         </div>
 
     </div>

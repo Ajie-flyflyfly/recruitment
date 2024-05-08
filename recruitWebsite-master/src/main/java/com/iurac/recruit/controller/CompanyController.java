@@ -55,29 +55,37 @@ public class CompanyController {
     @Autowired
     private JobService jobService;
 
+    //用户根据融资阶段和公司规模查找公司 personal/company?listed=&size=.html
     @RequestMapping("/personal/company")
     public String getCompanyByCondition(@RequestParam(value = "listed",required = false) String listedStatus,
                                         @RequestParam(value = "size",required = false) String size,
                                         Model model){
+        // 使用Model参数，用于向视图传递数据
         User user = (User) SecurityUtils.getSubject().getPrincipal();
         model.addAttribute("userInfo",user);
 
 
         QueryWrapper<Company> queryWrapper = new QueryWrapper<>();
 
+        // 如果listedStatus参数不为空，就将它作为查询条件
         if(!"".equals(listedStatus) && listedStatus!=null){
             queryWrapper.eq("listed_status",listedStatus);
             model.addAttribute("listed",listedStatus);
         }
+        // 如果size参数不为空，就将它作为查询条件
         if(!"".equals(size) && size!=null){
             queryWrapper.eq("size",size);
             model.addAttribute("size",size);
         }
+        // 使用companyService的list方法，根据查询条件获取公司列表
         List<Company> companyList = companyService.list(queryWrapper);
+        // 将公司列表添加到model中，键为companyList
         model.addAttribute("companyList",companyList);
+        // 返回视图名为personal/company，Spring MVC会将这个视图名解析为一个实际的视图页面
         return "personal/company";
     }
 
+    //公司入住功能（同时用户将增加manager身份，添加到hr表中）
     @PostMapping("/company/join")
     @ResponseBody
     public Result join(Company company,
@@ -95,7 +103,7 @@ public class CompanyController {
             company.setImg(ImageUtil.getFileName(originalFileName.substring(originalFileName.lastIndexOf("."))));
             ImageUtil.saveImage(file,company.getImg(),"companyIcon");
         }else {
-            company.setImg("default.png");
+            company.setImg("company.png");//???
         }
 
         companyService.join(user.getId(),company);
@@ -103,20 +111,25 @@ public class CompanyController {
         return Result.succ("操作成功");
     }
 
+    //返回公司的详细信息（hr的数量、岗位的数量）company/detail/34f11160ff5c4c9481209bfff3cae983.html
     @GetMapping("/company/detail/{id}")
+    // 使用@RequiresUser注解，表示这个方法需要用户登录才能访问
     @RequiresUser
     public String detail(@PathVariable("id")String id,Model model) throws Exception {
         User user = (User) SecurityUtils.getSubject().getPrincipal();
         model.addAttribute("userInfo",user);
 
+        //公司详细信息
         Company company = companyService.getById(id);
         model.addAttribute("company",company);
 
+        //hr数量
         QueryWrapper<Hr> hrQueryWrapper = new QueryWrapper<>();
         hrQueryWrapper.eq("company_id",id);
         int hrCount = hrService.count(hrQueryWrapper);
         model.addAttribute("hrCount",hrCount);
 
+        //岗位数量
         QueryWrapper<Job> jobQueryWrapper = new QueryWrapper<>();
         jobQueryWrapper.eq("company_id",id);
         int jobCount = jobService.count(jobQueryWrapper);
@@ -126,6 +139,7 @@ public class CompanyController {
     }
 
 
+    //管理员主页的企业分布echart
     @GetMapping("/company/chart")
     @RequiresRoles("admin")
     @ResponseBody
@@ -138,6 +152,8 @@ public class CompanyController {
         return map;
     }
 
+    //管理员公司管理中的搜索公司功能 返回的是TableResult<Company>
+    //admin/manage/resume.html
     @RequiresRoles("admin")
     @ResponseBody
     @GetMapping("/company/getByCondition")
@@ -149,6 +165,8 @@ public class CompanyController {
         return new TableResult(0,"",pageResultVo.getTotal(),pageResultVo.getRecords());
     }
 
+    //管理员公司管理中的编辑公司功能
+    //admin/manage/resume.html
     @RequiresRoles("admin")
     @ResponseBody
     @PostMapping("/company/update/{id}")
@@ -172,6 +190,8 @@ public class CompanyController {
         return companyService.updateById(company)?Result.succ("操作成功"):Result.fail("操作失败");
     }
 
+    //管理员公司管理中的删除公司功能
+    //admin/manage/resume.html
     @RequiresRoles("admin")
     @ResponseBody
     @PostMapping("/company/delete/{id}")

@@ -33,6 +33,16 @@ spring:
     host: 127.0.0.1
     pasword:
 
+#  #开发阶段设置为 false ，上线后设置为 true，默认是true走缓存
+#  spring.thymeleaf.cache=false
+#  # 设置模版文件的路径，前缀，默认就是classpath:/templates/
+#  spring.thymeleaf.prefix=classpath:/templates/
+#  # 设置后缀,默认就是 .html
+#  spring.thymeleaf.suffix=.html
+#  #编码方式，默认就是UTF-8，所以中文不会乱码
+#  spring.thymeleaf.encoding=UTF-8
+#  #模板的类型，默认是HTML，模板是html文件
+#  spring.thymeleaf.mode=HTML
   thymeleaf:
     cache: false
     mode: LEGACYHTML5
@@ -58,5 +68,4 @@ kaptcha:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
-logging.level.com.iurac.springbootshiro01.mapper: debug
+    logging.level.com.iurac.springbootshiro01.mapper: debug

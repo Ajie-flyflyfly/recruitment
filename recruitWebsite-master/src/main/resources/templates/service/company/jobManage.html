@@ -205,6 +205,7 @@
             ,range: true
         });
 
+        // 根据hr公司的id请求岗位列表
         var tableIns = table.render({
             elem: '#jobTable'
             , url: '/job/getByConditionInCompany/' + [[${hrInfo.companyId}]]
@@ -360,6 +361,7 @@
                     console.log(data);
                     if(size != 0){
                         layer.confirm('真的删除么', function(index){
+                            // 批量删除
                             for(let i = 0; i < size; i++){
                                 $.ajax({
                                     url: '/job/unpublish/'+data[i].id,

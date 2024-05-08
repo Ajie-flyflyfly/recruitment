@@ -3,16 +3,13 @@ package com.iurac.recruit.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.Data;
+
 import java.io.Serializable;
 
-/**
- * <p>
- * 
- * </p>
- *
- *
- */
+
 @TableName("t_dic_type")
+@Data
 public class DicType implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -34,36 +31,36 @@ public class DicType implements Serializable {
     private String description;
 
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    @Override
-    public String toString() {
-        return "DicType{" +
-        "id=" + id +
-        ", type=" + type +
-        ", description=" + description +
-        "}";
-    }
+//    public String getId() {
+//        return id;
+//    }
+//
+//    public void setId(String id) {
+//        this.id = id;
+//    }
+//
+//    public String getType() {
+//        return type;
+//    }
+//
+//    public void setType(String type) {
+//        this.type = type;
+//    }
+//
+//    public String getDescription() {
+//        return description;
+//    }
+//
+//    public void setDescription(String description) {
+//        this.description = description;
+//    }
+//
+//    @Override
+//    public String toString() {
+//        return "DicType{" +
+//        "id=" + id +
+//        ", type=" + type +
+//        ", description=" + description +
+//        "}";
+//    }
 }
